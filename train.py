@@ -104,7 +104,7 @@ if __name__=='__main__':
         logger.info("Epoch %d" % e)
         logger.info("Start training")
         print("\nEpoch %d" % e, flush=True)
-        save_file = os.path.join(args.weight_dir, 'epoch_%02d.h5')
+        save_file = os.path.join(args.weight_dir, 'epoch_%02d.h5' % e)
         train_loss = train_model(model, optim, train_iter, src_pad_token, device=device, save_path=save_file)
         logger.info("End training")
         logger.info("train_loss = %.8f" % train_loss)
