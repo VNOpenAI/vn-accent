@@ -85,6 +85,7 @@ if __name__=='__main__':
     if device.type=='cuda':
         model = model.cuda()
     optim = torch.optim.Adam(model.parameters(), lr=args.learning_rate, betas=(0.9, 0.98), eps=1e-9)
+    print("Using", device.type)
 
     # Load weight
     if args.restore_file is not None:
