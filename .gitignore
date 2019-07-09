@@ -6,6 +6,10 @@ __pycache__/
 # Ipython
 .ipynb_checkpoints/
 
+# Log and weight
+log.txt
+weight/
+
 # MacOS
 .DS_Store
 
