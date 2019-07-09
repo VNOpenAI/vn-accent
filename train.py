@@ -67,7 +67,7 @@ if __name__=='__main__':
         "trg_vocab_size": len(trg_tokenizer.word_index) + 1,
         "d_model": 1024,
         "d_ff": 4096,
-        "num_layers": 6,
+        "num_layers": 3,
         "num_heads": 16,
         "dropout": 0.3,
         "is_evolved": True,
