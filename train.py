@@ -44,6 +44,7 @@ if __name__=='__main__':
     logger=logging.getLogger(__name__)
 
     # Load tokenizer
+    print("Load tokenizer")
     tokenizer = torch.load(args.vocab_path)
     src_tokenizer = tokenizer['notone']
     trg_tokenizer = tokenizer['tone']
@@ -51,6 +52,7 @@ if __name__=='__main__':
     trg_pad_token = 0
 
     # Load data
+    print("Load data")
     train_src_file = args.train_path + args.src_postfix
     train_trg_file = args.train_path + args.trg_postfix
     train_dataset = MTDataset(src_tokenizer, trg_tokenizer, train_src_file, train_trg_file)
@@ -75,9 +77,8 @@ if __name__=='__main__':
     }
 
     # Device 
+    print("Init model")
     device = torch.device('cuda' if torch.cuda.is_available() and args.cuda else 'cpu')
-
-
 
     # Init model
     model = get_model(**evolved_big_param)
@@ -88,6 +89,7 @@ if __name__=='__main__':
     # Load weight
     if args.restore_file is not None:
         if os.path.isfile(args.restore_file):
+            print("Load model")
             state = torch.load(args.restore_file)
             model.load_state_dict(state['model'])
             optim.load_state_dict(state['optim'])
@@ -99,7 +101,7 @@ if __name__=='__main__':
         os.makedirs(args.weight_dir)
 
     # Train model
-        
+    print("Start training")
     for e in range(args.num_epochs):
         logger.info("Epoch %d" % e)
         logger.info("Start training")
