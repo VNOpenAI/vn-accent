@@ -13,7 +13,7 @@ class TransformerEncoder(nn.Module):
         super().__init__()
         self.encoder = Encoder(src_vocab_size, d_model, d_ff, num_layers, num_heads, dropout, layer_type.EncoderLayer)
         self.out = nn.Linear(d_model, trg_vocab_size)
-    def forward(self, src, trg, src_mask):
+    def forward(self, src, src_mask):
         e_outputs = self.encoder(src, src_mask)
         output = self.out(e_outputs)
         return output
