@@ -1,0 +1,29 @@
+{
+    "base_evolved": {
+        "d_model": 512,
+        "d_ff": 2048,
+        "num_layers": 3,
+        "num_heads": 8,
+        "dropout": 0.1,
+        "is_evolved": true,
+        "only_encoder": true
+    },
+    "big_evolved": {
+        "d_model": 1024,
+        "d_ff": 4096,
+        "num_layers": 3,
+        "num_heads": 16,
+        "dropout": 0.3,
+        "is_evolved": true,
+        "only_encoder": true
+    },
+    "dummy": {
+        "d_model": 32,
+        "d_ff": 64,
+        "num_layers": 1,
+        "num_heads": 2,
+        "dropout": 0.1,
+        "is_evolved": true,
+        "only_encoder": true
+    }
+}

@@ -1,5 +1,6 @@
 import argparse
 import os
+import json
 import logging
 
 import torch
@@ -19,6 +20,8 @@ def get_arg():
     parser.add_argument('val_path')
     parser.add_argument('--src_postfix', default='.notone')
     parser.add_argument('--trg_postfix', default='.tone')
+    parser.add_argument('--config_file', default='model_config.json')
+    parser.add_argument('--model_name', default='big_evolved')
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--cuda', action='store_true', default=False)
     parser.add_argument('--learning_rate', type=float, default=0.0001)
@@ -64,24 +67,23 @@ if __name__=='__main__':
     val_iter = data.dataloader.DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False)
 
     # Model config
-    evolved_big_param = {
-        "src_vocab_size": len(src_tokenizer.word_index) + 1,
-        "trg_vocab_size": len(trg_tokenizer.word_index) + 1,
-        "d_model": 1024,
-        "d_ff": 4096,
-        "num_layers": 3,
-        "num_heads": 16,
-        "dropout": 0.3,
-        "is_evolved": True,
-        "only_encoder": True
-    }
+    with open(args.config_file) as f:
+        config = json.load(f)
+    
+    if args.model_name in config:
+        model_param = config[args.model_name]
+    else:
+        raise Exception("Invalid model name")
+    
+    model_param['src_vocab_size'] = len(src_tokenizer.word_index) + 1
+    model_param['trg_vocab_size'] = len(trg_tokenizer.word_index) + 1
 
     # Device 
     print("Init model")
     device = torch.device('cuda' if torch.cuda.is_available() and args.cuda else 'cpu')
 
     # Init model
-    model = get_model(**evolved_big_param)
+    model = get_model(**model_param)
     if device.type=='cuda':
         model = model.cuda()
     optim = torch.optim.Adam(model.parameters(), lr=args.learning_rate, betas=(0.9, 0.98), eps=1e-9)
