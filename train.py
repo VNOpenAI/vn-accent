@@ -102,11 +102,11 @@ if __name__=='__main__':
         os.makedirs(args.weight_dir)
 
     # Train model
-    print("Start training")
-    for e in range(args.num_epochs):
-        logger.info("Epoch %d" % e)
+    print("Start training %d epochs" % args.num_epochs)
+    for e in range(1, args.num_epochs+1):
+        logger.info("Epoch %02d/%02d" % (e, args.num_epochs))
         logger.info("Start training")
-        print("\nEpoch %d" % e, flush=True)
+        print("\nEpoch %02d/%02d" % (e, args.num_epochs), flush=True)
         save_file = os.path.join(args.weight_dir, 'epoch_%02d.h5' % e)
         train_loss = train_model(model, optim, train_iter, src_pad_token, device=device, save_path=save_file)
         logger.info("End training")
