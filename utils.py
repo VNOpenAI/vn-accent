@@ -5,6 +5,11 @@ from tqdm import tqdm
 
 from Transformer.Model.Mask import create_src_mask
 
+def forward(model, src, src_pad_token=0):
+    src_mask = create_src_mask(src, pad_token=src_pad_token)
+    logit = model(src, src_mask)
+    return logit
+
 
 def forward_and_loss(model, src, trg, loss_fn, src_pad_token=0):     
     src_mask = create_src_mask(src, pad_token=src_pad_token)
@@ -69,3 +74,26 @@ def evaluate_model(model, val_iter, src_pad_token, device=None):
             pbar.set_description("val_loss = %.8f" % (total_loss/total_item))
 
     return total_loss/total_item
+
+def translate(model, src, src_tokenizer, trg_tokenizer, src_pad_token=0, trg_pad_token=0, max_len=200):
+    if isinstance(src, str):
+        src = [src]
+    if isinstance(src[0], str):
+        seqs = src_tokenizer.texts_to_sequences(sents)
+        seqs = pad_sequences(seqs, max_len)
+        seqs = torch.tensor(seqs).long()
+    elif isinstance(src, torch.Tensor):
+        seqs = src
+    else:
+        raise Exception("src must be str, list(str) or torch.Tensor")
+
+    with torch.no_grad():
+        logit = forward(model, seqs, src_pad_token)
+    logit = F.softmax(logit, dim=-1)
+    preds = logit.argmax(dim=-1)
+    trg_seqs = []
+    for seq in preds.numpy():
+        seq = [x for x in seq if x!=trg_pad_token]
+        trg_seqs.append(seq)
+    trg_sents = trg_tokenizer.sequences_to_texts(trg_seqs)
+    return trg_sents
