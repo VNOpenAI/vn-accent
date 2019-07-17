@@ -89,7 +89,7 @@ def translate(model, src, src_tokenizer, trg_tokenizer, src_pad_token=0, trg_pad
 
     with torch.no_grad():
         logit = forward(model, seqs, src_pad_token)
-    logit = F.softmax(logit, dim=-1)
+    # logit = F.softmax(logit, dim=-1)
     preds = logit.argmax(dim=-1)
     trg_seqs = []
     for seq in preds.cpu().numpy():
