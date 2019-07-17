@@ -86,10 +86,9 @@ if __name__=='__main__':
 
     with tqdm(total=len(data_iter)) as pbar, open(args.output_file, 'w') as f:
         for src in data_iter:
-            src = src[0]
             if device.type=='cuda':
                 src = src.cuda()
-            trg_sents = translate(model, src[0], src_tokenizer, trg_tokenizer, src_pad_token, trg_pad_token)
+            trg_sents = translate(model, src, src_tokenizer, trg_tokenizer, src_pad_token, trg_pad_token)
             for s in trg_sents:
                 f.write(s+'\n')
             pbar.update(1)
