@@ -92,7 +92,7 @@ def translate(model, src, src_tokenizer, trg_tokenizer, src_pad_token=0, trg_pad
     logit = F.softmax(logit, dim=-1)
     preds = logit.argmax(dim=-1)
     trg_seqs = []
-    for seq in preds.numpy():
+    for seq in preds.cpu().numpy():
         seq = [x for x in seq if x!=trg_pad_token]
         trg_seqs.append(seq)
     trg_sents = trg_tokenizer.sequences_to_texts(trg_seqs)
