@@ -33,9 +33,11 @@ def make_dataset(fp, tokenizer, max_len=200):
         sents = f.read().split('\n')[:-1]
 
     seqs = tokenizer.texts_to_sequences(sents)
+    seqs_len = [len(x) for x in seqs]
     seqs = pad_sequences(seqs, max_len)
     seq_tensors = torch.tensor(seqs).long()
-    ds = data.dataset.TensorDataset(seq_tensors)
+    seq_len_tensors = torch.tensor(seqs_len).long()
+    ds = data.dataset.TensorDataset(seq_tensors, seq_len_tensors)
     return ds
 
 
@@ -85,11 +87,24 @@ if __name__=='__main__':
         raise Exception("Invalid weight path")
 
     with tqdm(total=len(data_iter)) as pbar, open(args.output_file, 'w') as f:
-        for src in data_iter:
-            src = src[0]
+        for seqs, seqs_len in data_iter:
             if device.type=='cuda':
-                src = src.cuda()
-            trg_sents = translate(model, src, src_tokenizer, trg_tokenizer, src_pad_token, trg_pad_token)
+                seqs = seqs.cuda()
+
+            with torch.no_grad():
+                logit = forward(model, seqs, src_pad_token)
+            logit = F.softmax(logit, dim=-1)
+            preds = logit.argmax(dim=-1)
+            preds = preds.cpu().numpy()
+            seqs_len = seqs_len.numpy()
+            trg_seqs = []
+            for seq, seq_len in zip(preds, seqs_len):
+                seq = seq[:seq_len]
+                trg_seqs.append(seq)
+
+            trg_sents = trg_tokenizer.sequences_to_texts(trg_seqs)
             for s in trg_sents:
                 f.write(s+'\n')
             pbar.update(1)
+
+
