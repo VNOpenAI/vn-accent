@@ -34,7 +34,7 @@ def make_dataset(fp, tokenizer, max_len=200):
 
     seqs = tokenizer.texts_to_sequences(sents)
     seqs_len = [len(x) for x in seqs]
-    seqs = pad_sequences(seqs, max_len)
+    seqs = pad_sequences(seqs, max_len, padding='post')
     seq_tensors = torch.tensor(seqs).long()
     seq_len_tensors = torch.tensor(seqs_len).long()
     ds = data.dataset.TensorDataset(seq_tensors, seq_len_tensors)
