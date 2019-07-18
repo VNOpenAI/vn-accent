@@ -10,7 +10,7 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 
 from model import get_model
-from utils import translate
+from utils import forward
 from tqdm import tqdm
 
 def get_arg():
