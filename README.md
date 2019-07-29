@@ -1,6 +1,6 @@
 ## Giới thiệu
 Đây là một model sử dụng cho cuộc thi [Thêm dấu tiếng Việt](https://www.aivivn.com/contests/3) của AIVIVN.  
-Public test score trên scoreboard là 0.977 (accuracy)
+Public test score trên scoreboard là 0.97522 (accuracy)
 
 ## Model
 Có thể coi đây là bài toán sequence prediction hoặc machine translation đều được  
