@@ -210,4 +210,4 @@ def compare_ids(file1, file2):
 
 if __name__ == '__main__':
     # remove_tone_file('./data/demo_test.txt', './data/demo_no_tone.txt')
-    decompose_predicted_test_file('./res/repair.txt')
+    decompose_predicted_test_file('./data/result.txt')
