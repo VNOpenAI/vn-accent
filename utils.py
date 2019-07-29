@@ -75,25 +75,23 @@ def evaluate_model(model, val_iter, src_pad_token, device=None):
 
     return total_loss/total_item
 
-def translate(model, src, src_tokenizer, trg_tokenizer, src_pad_token=0, trg_pad_token=0, max_len=200):
-    if isinstance(src, str):
-        src = [src]
-    if isinstance(src[0], str):
-        seqs = src_tokenizer.texts_to_sequences(sents)
-        seqs = pad_sequences(seqs, max_len)
-        seqs = torch.tensor(seqs).long()
-    elif isinstance(src, torch.Tensor):
-        seqs = src
-    else:
-        raise Exception("src must be str, list(str) or torch.Tensor")
-
+def translate(model, sents, src_tokenizer, trg_tokenizer, maxlen=200, device=None):
+    sents = [x.lower().split() for x in sents]
+    sents_len =[len(x) for x in sents]
+    seqs = []
+    for sent in sents:
+        seq = [src_tokenizer.word_index[x] if x in src_tokenizer.word_index else 1 for x in sent]
+        seqs.append(seq)
+    seqs = pad_sequences(seqs, maxlen, padding='post')
+    seqs = torch.tensor(seqs).long()
+    if device is not None and device.type=='cuda':
+        seqs = seqs.cuda()
     with torch.no_grad():
-        logit = forward(model, seqs, src_pad_token)
-    # logit = F.softmax(logit, dim=-1)
-    preds = logit.argmax(dim=-1)
-    trg_seqs = []
-    for seq in preds.cpu().numpy():
-        seq = [x for x in seq if x!=trg_pad_token]
-        trg_seqs.append(seq)
-    trg_sents = trg_tokenizer.sequences_to_texts(trg_seqs)
-    return trg_sents
+        probs = forward(model, seqs, 0)
+    probs = probs.cpu().detach().numpy()
+    preds = probs.argmax(axis=-1)
+    res = []
+    for sent_len, seq in zip(sents_len, preds):
+        res.append(seq[:sent_len])
+    res = trg_tokenizer.sequences_to_texts(res)
+    return res

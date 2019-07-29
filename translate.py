@@ -10,7 +10,7 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 
 from model import get_model
-from utils import forward
+from utils import translate
 from tqdm import tqdm
 
 def get_arg():
@@ -27,18 +27,6 @@ def get_arg():
     args = parser.parse_args()
 
     return args
-
-def make_dataset(fp, tokenizer, max_len=200):
-    with open(fp) as f:
-        sents = f.read().split('\n')[:-1]
-
-    seqs = tokenizer.texts_to_sequences(sents)
-    seqs_len = [len(x) for x in seqs]
-    seqs = pad_sequences(seqs, max_len, padding='post')
-    seq_tensors = torch.tensor(seqs).long()
-    seq_len_tensors = torch.tensor(seqs_len).long()
-    ds = data.dataset.TensorDataset(seq_tensors, seq_len_tensors)
-    return ds
 
 
 if __name__=='__main__':
@@ -86,25 +74,23 @@ if __name__=='__main__':
     else:
         raise Exception("Invalid weight path")
 
-    with tqdm(total=len(data_iter)) as pbar, open(args.output_file, 'w') as f:
-        for seqs, seqs_len in data_iter:
-            if device.type=='cuda':
-                seqs = seqs.cuda()
+    with open(args.test_path) as f:
+        test_set = f.read().split('\n')[:-1]
 
-            with torch.no_grad():
-                logit = forward(model, seqs, src_pad_token)
-            logit = F.softmax(logit, dim=-1)
-            preds = logit.argmax(dim=-1)
-            preds = preds.cpu().numpy()
-            seqs_len = seqs_len.numpy()
-            trg_seqs = []
-            for seq, seq_len in zip(preds, seqs_len):
-                seq = seq[:seq_len]
-                trg_seqs.append(seq)
+    batch_size = args.batch_size
+    set_len = len(test_set)
+    num_iter = set_len//batch_size+1
 
-            trg_sents = trg_tokenizer.sequences_to_texts(trg_seqs)
-            for s in trg_sents:
-                f.write(s+'\n')
+    with tqdm(total=num_iter) as pbar, open(args.output_file, 'w') as f:
+        for i in range(num_iter):
+            start = i*batch_size
+            end = min((i+1)*batch_size, set_len)
+            sents = test_set[start:end]
+            id_list = [x[:4] for x in sents]
+            sents = [x[4:] for x in sents]
+            res = translate(model, sents, src_tokenizer, trg_tokenizer, device=device)
+            for i,s in zip(id_list, res):
+                f.write(i+s+'\n')
             pbar.update(1)
 
 
