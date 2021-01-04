@@ -36,7 +36,7 @@ class Transformer(nn.Module):
 
 class LSTM(nn.Module):
     def __init__(self, src_vocab_size, trg_vocab_size, 
-            d_model, bidirectional=True):
+            d_model, bidirectional=False):
         super().__init__()
         self.embed = nn.Embedding(src_vocab_size, d_model)
         num_directions = 2 if bidirectional else 1
@@ -75,9 +75,9 @@ def get_model(model_type, src_vocab_size, trg_vocab_size,
                                 d_model, d_ff, num_layers, num_heads, 
                                 dropout, layer_type=EvolvedLayer)
     elif model_type == "LSTM":
-        model = LSTM(src_vocab_size, trg_vocab_size, 
-                                d_model, 
-                                dropout)
+        model = LSTM(src_vocab_size, trg_vocab_size, d_model, bidirectional=False)
+    elif model_type == "LSTM_BIDIRECTIONAL":
+        model = LSTM(src_vocab_size, trg_vocab_size, d_model, bidirectional=True)
 
     for p in model.parameters():
         if p.dim() > 1:

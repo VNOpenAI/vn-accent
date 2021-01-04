@@ -11,6 +11,10 @@
         "model_type": "LSTM",
         "d_model": 256
     },
+    "bi_lstm": {
+        "model_type": "LSTM_BIDIRECTIONAL",
+        "d_model": 256
+    },
     "dummy": {
         "d_model": 32,
         "d_ff": 64,
