@@ -62,7 +62,7 @@ def train_model(model, optimizer, train_iter, src_pad_token, use_mask=True, save
     return total_loss/total_item
 
 
-def evaluate_model(model, val_iter, src_pad_token, device=None):
+def evaluate_model(model, val_iter, src_pad_token, use_mask=True, device=None):
     model.eval()
     with torch.no_grad(), tqdm(total=len(val_iter)) as pbar:
         total_loss = 0.0
@@ -72,7 +72,7 @@ def evaluate_model(model, val_iter, src_pad_token, device=None):
                 src = src.cuda()
                 trg = trg.cuda()
 
-            _, loss = forward_and_loss(model, src, trg, F.cross_entropy, src_pad_token=src_pad_token)
+            _, loss = forward_and_loss(model, src, trg, F.cross_entropy, use_mask=use_mask, src_pad_token=src_pad_token)
             
             total_loss += loss.item()
             total_item += src.size(0)

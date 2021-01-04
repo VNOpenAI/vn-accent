@@ -119,5 +119,5 @@ if __name__=='__main__':
         train_loss = train_model(model, optim, train_iter, src_pad_token, use_mask=use_mask, device=device, save_path=save_file)
         logger.info("End training")
         logger.info("train_loss = %.8f" % train_loss)
-        val_loss = evaluate_model(model, val_iter, src_pad_token, device=device)
+        val_loss = evaluate_model(model, val_iter, src_pad_token, use_mask=use_mask, device=device)
         logger.info("val_loss   = %.8f\n" % val_loss)
