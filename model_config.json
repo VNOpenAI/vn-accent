@@ -1,5 +1,5 @@
 {
-    "base_evolved": {
+    "transformer_evolved": {
         "model_type": "TRANSFORMER_ENCODER_EVOLVED",
         "d_model": 512,
         "d_ff": 2048,
@@ -9,8 +9,7 @@
     },
     "lstm": {
         "model_type": "LSTM",
-        "d_model": 32,
-        "dropout": 0.1
+        "d_model": 256
     },
     "dummy": {
         "d_model": 32,

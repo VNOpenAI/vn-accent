@@ -36,11 +36,12 @@ class Transformer(nn.Module):
 
 class LSTM(nn.Module):
     def __init__(self, src_vocab_size, trg_vocab_size, 
-            d_model, dropout):
+            d_model, bidirectional=True):
         super().__init__()
         self.embed = nn.Embedding(src_vocab_size, d_model)
-        self.lstm = nn.LSTM(d_model, d_model)
-        self.out = nn.Linear(d_model, trg_vocab_size)
+        num_directions = 2 if bidirectional else 1
+        self.lstm = nn.LSTM(d_model, d_model, bidirectional=bidirectional, batch_first=True)
+        self.out = nn.Linear(d_model * num_directions, trg_vocab_size)
     def forward(self, src):
         embedded = self.embed(src)
         lstm_output, hidden = self.lstm(embedded)
@@ -52,7 +53,7 @@ def get_model(model_type, src_vocab_size, trg_vocab_size,
         d_model=512, d_ff=2048, 
         num_layers=6, num_heads=8, dropout=0.1):
 
-    assert d_model % num_heads == 0
+    # assert d_model % num_heads == 0
     assert dropout < 1
 
 
