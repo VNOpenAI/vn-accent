@@ -2,6 +2,7 @@ import argparse
 import os
 import json
 import logging
+from pathlib import Path
 
 import torch
 import torch.nn as nn
@@ -18,6 +19,7 @@ def get_arg():
     parser.add_argument('vocab_path')
     parser.add_argument('train_path')
     parser.add_argument('val_path')
+    parser.add_argument('--experiment_name')
     parser.add_argument('--src_postfix', default='.notone')
     parser.add_argument('--trg_postfix', default='.tone')
     parser.add_argument('--config_file', default='model_config.json')
@@ -26,9 +28,7 @@ def get_arg():
     parser.add_argument('--cuda', action='store_true', default=False)
     parser.add_argument('--learning_rate', type=float, default=0.0001)
     parser.add_argument('--num_epochs', type=int, default=1)
-    parser.add_argument('--weight_dir', default='weight')
     parser.add_argument('--restore_file', default=None)
-    parser.add_argument('--log_file', default='log.txt')
 
     args = parser.parse_args()
 
@@ -37,10 +37,15 @@ def get_arg():
 if __name__=='__main__':
     args = get_arg()
 
+    # Init experiment folder
+    experiment_folder = os.path.join("experiments", args.experiment_name)
+    Path(experiment_folder).mkdir(parents=True, exist_ok=True)
+
     # Init Log
+    log_file = os.path.join(experiment_folder, "logs.txt")
     for handler in logging.root.handlers[:]:
         logging.root.removeHandler(handler)
-    logging.basicConfig(filename=args.log_file, 
+    logging.basicConfig(filename=log_file, 
                         filemode='a',
                         level=logging.INFO, 
                         format="%(levelname)s - %(asctime)s: %(message)s")
@@ -100,17 +105,18 @@ if __name__=='__main__':
             raise Exception("Invalid weight path")
     
     # Init weight dir
-    if not os.path.isdir(args.weight_dir):
-        os.makedirs(args.weight_dir)
+    weight_folder = os.path.join(experiment_folder, "weights")
+    Path(weight_folder).mkdir(parents=True, exist_ok=True)
 
     # Train model
+    use_mask = True if model_param["model_type"] != "LSTM" else False
     print("Start training %d epochs" % args.num_epochs)
     for e in range(1, args.num_epochs+1):
         logger.info("Epoch %02d/%02d" % (e, args.num_epochs))
         logger.info("Start training")
         print("\nEpoch %02d/%02d" % (e, args.num_epochs), flush=True)
-        save_file = os.path.join(args.weight_dir, 'epoch_%02d.h5' % e)
-        train_loss = train_model(model, optim, train_iter, src_pad_token, device=device, save_path=save_file)
+        save_file = os.path.join(weight_folder, 'epoch_%02d.h5' % e)
+        train_loss = train_model(model, optim, train_iter, src_pad_token, use_mask=use_mask, device=device, save_path=save_file)
         logger.info("End training")
         logger.info("train_loss = %.8f" % train_loss)
         val_loss = evaluate_model(model, val_iter, src_pad_token, device=device)

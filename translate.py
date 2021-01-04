@@ -11,14 +11,13 @@ from keras.preprocessing.sequence import pad_sequences
 
 from model import get_model
 from utils import translate
-from tqdm import tqdm
 
 def get_arg():
     parser = argparse.ArgumentParser()
     parser.add_argument('vocab_path')
-    parser.add_argument('test_path')
+    # parser.add_argument('test_path')
     parser.add_argument('weight_file')
-    parser.add_argument('--output_file', default='output.txt')
+    # parser.add_argument('--output_file', default='output.txt')
     parser.add_argument('--config_file', default='model_config.json')
     parser.add_argument('--model_name', default='big_evolved')
     parser.add_argument('--batch_size', type=int, default=32)
@@ -39,11 +38,6 @@ if __name__=='__main__':
     trg_tokenizer = tokenizer['tone']
     src_pad_token = 0
     trg_pad_token = 0
-
-    # Load data
-    print("Load data")
-    dataset = make_dataset(args.test_path, src_tokenizer)
-    data_iter = data.dataloader.DataLoader(dataset, batch_size=args.batch_size, shuffle=False)
 
     # Load model
     print("Init model")
@@ -74,23 +68,11 @@ if __name__=='__main__':
     else:
         raise Exception("Invalid weight path")
 
-    with open(args.test_path) as f:
-        test_set = f.read().split('\n')[:-1]
-
-    batch_size = args.batch_size
-    set_len = len(test_set)
-    num_iter = set_len//batch_size+1
-
-    with tqdm(total=num_iter) as pbar, open(args.output_file, 'w') as f:
-        for i in range(num_iter):
-            start = i*batch_size
-            end = min((i+1)*batch_size, set_len)
-            sents = test_set[start:end]
-            id_list = [x[:4] for x in sents]
-            sents = [x[4:] for x in sents]
-            res = translate(model, sents, src_tokenizer, trg_tokenizer, device=device)
-            for i,s in zip(id_list, res):
-                f.write(i+s+'\n')
-            pbar.update(1)
+    use_mask = True if model_param["model_type"] != "LSTM" else False
+    while True:
+        sents = input("String: ")
+        sents = [sents]
+        res = translate(model, sents, src_tokenizer, trg_tokenizer, use_mask=use_mask, device=device)
+        print(res)
 
 

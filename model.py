@@ -2,8 +2,8 @@ import os
 import torch
 import torch.nn as nn
 
-from Transformer.Model import Layer, EvolvedLayer
-from Transformer.Model.Transformer import Encoder, Decoder
+from models import Layer, EvolvedLayer
+from models.Transformer import Encoder, Decoder
 
 
 class TransformerEncoder(nn.Module):
@@ -34,31 +34,49 @@ class Transformer(nn.Module):
         return output
 
 
+class LSTM(nn.Module):
+    def __init__(self, src_vocab_size, trg_vocab_size, 
+            d_model, dropout):
+        super().__init__()
+        self.embed = nn.Embedding(src_vocab_size, d_model)
+        self.lstm = nn.LSTM(d_model, d_model)
+        self.out = nn.Linear(d_model, trg_vocab_size)
+    def forward(self, src):
+        embedded = self.embed(src)
+        lstm_output, hidden = self.lstm(embedded)
+        output = self.out(lstm_output)
+        return output
 
-def get_model(src_vocab_size, trg_vocab_size, 
+
+def get_model(model_type, src_vocab_size, trg_vocab_size, 
         d_model=512, d_ff=2048, 
-        num_layers=6, num_heads=8, dropout=0.1, 
-        is_evolved=False, only_encoder=False):
+        num_layers=6, num_heads=8, dropout=0.1):
 
     assert d_model % num_heads == 0
     assert dropout < 1
 
-    model_type = None
-    layer_type = None
 
-    if is_evolved:
-        layer_type = EvolvedLayer
-    else:
-        layer_type = Layer
-
-    if only_encoder:
-        model_type = TransformerEncoder
-    else:
-        model_type = Transformer
-
-    model = model_type(src_vocab_size, trg_vocab_size, 
+    model = None
+    if model_type == "TRANSFORMER_BASE":
+        model = Transformer(src_vocab_size, trg_vocab_size, 
                                 d_model, d_ff, num_layers, num_heads, 
-                                dropout, layer_type=layer_type)
+                                dropout, layer_type=Layer)
+    elif model_type == "TRANSFORMER_ENCODER_BASE":
+        model = TransformerEncoder(src_vocab_size, trg_vocab_size, 
+                                d_model, d_ff, num_layers, num_heads, 
+                                dropout, layer_type=Layer)
+    elif model_type == "TRANSFORMER_EVOLVED":
+        model = Transformer(src_vocab_size, trg_vocab_size, 
+                                d_model, d_ff, num_layers, num_heads, 
+                                dropout, layer_type=EvolvedLayer)
+    elif model_type == "TRANSFORMER_ENCODER_EVOLVED":
+        model = TransformerEncoder(src_vocab_size, trg_vocab_size, 
+                                d_model, d_ff, num_layers, num_heads, 
+                                dropout, layer_type=EvolvedLayer)
+    elif model_type == "LSTM":
+        model = LSTM(src_vocab_size, trg_vocab_size, 
+                                d_model, 
+                                dropout)
 
     for p in model.parameters():
         if p.dim() > 1:
