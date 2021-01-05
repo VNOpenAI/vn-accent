@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from tqdm import tqdm
 from keras.preprocessing.sequence import pad_sequences
-
+from accent_utils import extract_words, remove_tone_line
 from models.Mask import create_src_mask
 
 def forward(model, src, src_pad_token=0, use_mask=True):
@@ -83,12 +83,23 @@ def evaluate_model(model, val_iter, src_pad_token, use_mask=True, device=None):
     return total_loss/total_item
 
 def translate(model, sents, src_tokenizer, trg_tokenizer, maxlen=200, use_mask=True, device=None):
-    sents = [x.lower().split() for x in sents]
-    sents_len =[len(x) for x in sents]
+    
+    words, word_indices = extract_words(sents)
+    lower_words = [x.lower() for x in words]
+
+    # Tokenize words
+    known_word_mask = [] # Same size as words - True if word is in word list, otherwise False
     seqs = []
-    for sent in sents:
-        seq = [src_tokenizer.word_index[x] if x in src_tokenizer.word_index else 1 for x in sent]
-        seqs.append(seq)
+    for word in lower_words:
+        if word in src_tokenizer.word_index:
+            seqs.append(src_tokenizer.word_index[word])
+            known_word_mask.append(True)
+        else:
+            seqs.append(1)
+            known_word_mask.append(False)
+    seqs = [seqs]
+
+    # Model inference
     seqs = pad_sequences(seqs, maxlen, padding='post')
     seqs = torch.tensor(seqs).long()
     if device is not None and device.type=='cuda':
@@ -96,9 +107,33 @@ def translate(model, sents, src_tokenizer, trg_tokenizer, maxlen=200, use_mask=T
     with torch.no_grad():
         probs = forward(model, seqs, 0, use_mask=use_mask)
     probs = probs.cpu().detach().numpy()
-    preds = probs.argmax(axis=-1)
-    res = []
-    for sent_len, seq in zip(sents_len, preds):
-        res.append(seq[:sent_len])
-    res = trg_tokenizer.sequences_to_texts(res)
-    return res
+    
+    # Add tone
+    output = sents
+    probs = probs[0]
+    prob_indices = probs.argsort(axis=-1)[:, ::-1]
+    prob_indices = prob_indices[:, :100]
+    for i, word in enumerate(lower_words):
+        
+        # Skip unknown words
+        if not known_word_mask[i]:
+            continue
+
+        # Find the best solution
+        for idx in prob_indices[i, :]:
+            target_word = trg_tokenizer.sequences_to_texts([[idx]])[0]
+            if remove_tone_line(target_word.lower()) == word:
+                begin_idx, end_idx = word_indices[i]
+
+                # Correct lower / upper case
+                corrected_word = ""
+                for ic, char in enumerate(words[i]):
+                    if char.islower():
+                        corrected_word += target_word[ic].lower()
+                    else:
+                        corrected_word += target_word[ic].upper()
+
+                output = output[:begin_idx] + corrected_word + output[end_idx:]
+                break
+
+    return output

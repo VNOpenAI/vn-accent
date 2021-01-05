@@ -207,6 +207,20 @@ def compare_ids(file1, file2):
     print ('ids in {} but not in {}:'.format(file2, file1))
     print (ids2 - ids1)
 
-if __name__ == '__main__':
-    remove_tone_file('./data/demo_test.txt', './data/demo_no_tone.txt')
-    decompose_predicted_test_file('./data/demo_test.txt')
+
+def extract_words(sentence):
+    pattern = '[AĂÂÁẮẤÀẰẦẢẲẨÃẴẪẠẶẬĐEÊÉẾÈỀẺỂẼỄẸỆIÍÌỈĨỊ'+ \
+            'OÔƠÓỐỚÒỒỜỎỔỞÕỖỠỌỘỢUƯÚỨÙỪỦỬŨỮỤỰYÝỲỶỸỴAĂÂÁẮẤÀẰẦẢẲẨÃẴẪẠẶẬ'+ \
+            'ĐEÊÉẾÈỀẺỂẼỄẸỆIÍÌỈĨỊOÔƠÓỐỚÒỒỜỎỔỞÕỖỠỌỘỢUƯÚỨÙỪỦỬŨỮỤỰYÝỲỶỸỴ'+ \
+            'AĂÂÁẮẤÀẰẦẢẲẨÃẴẪẠẶẬĐEÊÉẾÈỀẺỂẼỄẸỆIÍÌỈĨỊOÔƠÓỐỚÒỒỜỎỔỞÕỖỠỌỘỢ'+ \
+            'UƯÚỨÙỪỦỬŨỮỤỰYÝỲỶỸỴAĂÂÁẮẤÀẰẦẢẲẨÃẴẪẠẶẬĐEÊÉẾÈỀẺỂẼỄẸỆIÍÌỈĨỊ'+ \
+            'OÔƠÓỐỚÒỒỜỎỔỞÕỖỠỌỘỢUƯÚỨÙỪỦỬŨỮỤỰYÝỲỶỸỴAĂÂÁẮẤÀẰẦẢẲẨÃẴẪẠẶẬĐ'+ \
+            'EÊÉẾÈỀẺỂẼỄẸỆIÍÌỈĨỊOÔƠÓỐỚÒỒỜỎỔỞÕỖỠỌỘỢUƯÚỨÙỪỦỬŨỮỤỰYÝỲỶỸỴ'+ \
+            'AĂÂÁẮẤÀẰẦẢẲẨÃẴẪẠẶẬĐEÊÉẾÈỀẺỂẼỄẸỆIÍÌỈĨỊOÔƠÓỐỚÒỒỜỎỔỞÕỖỠỌỘỢ'+ \
+            'UƯÚỨÙỪỦỬŨỮỤỰYÝỲỶỸỴA-Z]+'
+    indices = []
+    words = []
+    for m in re.finditer(pattern, sentence,  re.IGNORECASE):
+        words.append(m.group(0))
+        indices.append((m.start(0), m.end(0)))
+    return words, indices
