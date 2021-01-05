@@ -49,9 +49,15 @@ class LSTM(nn.Module):
         return output
 
 
-def get_model(model_type, src_vocab_size, trg_vocab_size, 
-        d_model=512, d_ff=2048, 
-        num_layers=6, num_heads=8, dropout=0.1):
+def get_model(model_param):
+    model_type = model_param.get("model_type")
+    src_vocab_size = model_param.get("src_vocab_size")
+    trg_vocab_size = model_param.get("trg_vocab_size")
+    d_model = model_param.get("d_model", 512)
+    d_ff = model_param.get("d_ff", 2048)
+    num_layers = model_param.get("num_layers", 6)
+    num_heads = model_param.get("num_heads", 8)
+    dropout = model_param.get("dropout", 0.0)
 
     # assert d_model % num_heads == 0
     assert dropout < 1

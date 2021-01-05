@@ -88,7 +88,7 @@ if __name__=='__main__':
     device = torch.device('cuda' if torch.cuda.is_available() and args.cuda else 'cpu')
 
     # Init model
-    model = get_model(**model_param)
+    model = get_model(model_param)
     if device.type=='cuda':
         model = model.cuda()
     optim = torch.optim.Adam(model.parameters(), lr=args.learning_rate, betas=(0.9, 0.98), eps=1e-9)
@@ -109,15 +109,14 @@ if __name__=='__main__':
     Path(weight_folder).mkdir(parents=True, exist_ok=True)
 
     # Train model
-    use_mask = True if model_param["model_type"] != "LSTM" else False
     print("Start training %d epochs" % args.num_epochs)
     for e in range(1, args.num_epochs+1):
         logger.info("Epoch %02d/%02d" % (e, args.num_epochs))
         logger.info("Start training")
         print("\nEpoch %02d/%02d" % (e, args.num_epochs), flush=True)
         save_file = os.path.join(weight_folder, 'epoch_%02d.h5' % e)
-        train_loss = train_model(model, optim, train_iter, src_pad_token, use_mask=use_mask, device=device, save_path=save_file)
+        train_loss = train_model(model, optim, train_iter, src_pad_token, use_mask=model_param["use_mask"], device=device, save_path=save_file)
         logger.info("End training")
         logger.info("train_loss = %.8f" % train_loss)
-        val_loss = evaluate_model(model, val_iter, src_pad_token, use_mask=use_mask, device=device)
+        val_loss = evaluate_model(model, val_iter, src_pad_token, use_mask=model_param["use_mask"], device=device)
         logger.info("val_loss   = %.8f\n" % val_loss)

@@ -52,7 +52,7 @@ if __name__=='__main__':
     model_param['src_vocab_size'] = len(src_tokenizer.word_index) + 1
     model_param['trg_vocab_size'] = len(trg_tokenizer.word_index) + 1
 
-    model = get_model(**model_param)
+    model = get_model(model_param)
     device = torch.device('cuda' if torch.cuda.is_available() and args.cuda else 'cpu')
     print("Using", device.type)
     if device.type=='cuda':
@@ -68,11 +68,9 @@ if __name__=='__main__':
     else:
         raise Exception("Invalid weight path")
 
-    use_mask = True if model_param["model_type"] != "LSTM" else False
     while True:
         sents = input("String: ")
-        sents = [sents]
-        res = translate(model, sents, src_tokenizer, trg_tokenizer, use_mask=use_mask, device=device)
+        res = translate(model, sents, src_tokenizer, trg_tokenizer, use_mask=model_param["use_mask"], device=device)
         print(res)
 
 

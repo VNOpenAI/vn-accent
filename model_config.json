@@ -5,21 +5,22 @@
         "d_ff": 2048,
         "num_layers": 3,
         "num_heads": 8,
-        "dropout": 0.1
+        "dropout": 0.1,
+        "use_mask": true
     },
     "lstm": {
         "model_type": "LSTM",
-        "d_model": 256
+        "d_model": 256,
+        "use_mask": false
     },
     "bi_lstm": {
         "model_type": "LSTM_BIDIRECTIONAL",
-        "d_model": 256
+        "d_model": 256,
+        "use_mask": false
     },
-    "dummy": {
-        "d_model": 32,
-        "d_ff": 64,
-        "num_layers": 1,
-        "num_heads": 2,
-        "dropout": 0.1
+    "bi_lstm_large": {
+        "model_type": "LSTM_BIDIRECTIONAL",
+        "d_model": 512,
+        "use_mask": false
     }
 }
