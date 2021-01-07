@@ -40,7 +40,15 @@ Repo này implement kiến trúc của [Evolved Transformer](https://arxiv.org/a
 Ở đây chúng ta không dùng tokenizer tạo từ các tập data trên mà dùng word list từ [vietnamese-wordlist](https://github.com/duyetdev/vietnamese-wordlist) để tạo bộ tokenizer bằng cách split các từ trong word list và chọn lại các từ đơn. 
 Kết quả được khoảng 9000 từ có dấu và 3000 từ không có dấu.
 
-## Training
+## Demo
+
+- Transformer Envolved:
+
+```
+sh run_transformer_evolved.sh
+```
+
+## Train
 
 - Transformer Envolved:
 
@@ -48,8 +56,10 @@ Kết quả được khoảng 9000 từ có dấu và 3000 từ không có dấu
 sh train_transformer_evolved.sh
 ```
 
-- LSTM + Linear:
+## Test
+
+- Transformer Envolved:
 
 ```
-sh train_transformer_evolved.sh
+sh test_transformer_evolved.sh
 ```

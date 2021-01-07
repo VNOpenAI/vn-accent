@@ -137,11 +137,9 @@ def process_line(line):
     no_tone_line_pre = remove_tone_line(utf8_line)
     normalized_line_pre = normalize_tone_line(utf8_line)
 
-    no_tone_line_alphanumeric = re.sub('[^a-zA-Z\d]', ' ', repr(no_tone_line_pre))
-    normalized_line_alphanumeric = re.sub('[^a-zA-Z\d]', ' ', repr(normalized_line_pre))
+    no_tone_words, _ = extract_words(no_tone_line_pre, include_digits=True)
+    normalized_words, _ = extract_words(normalized_line_pre, include_digits=True)
 
-    no_tone_words = no_tone_line_alphanumeric.split()
-    normalized_words = normalized_line_alphanumeric.split()
     assert len(no_tone_words) == len(normalized_words)
 
     filtered_no_tone_words = []
@@ -150,8 +148,6 @@ def process_line(line):
         if not word.isalpha():
             continue
         simplified_word = simplify(normalized_words[i])
-        if simplified_word == '#':
-            continue
         filtered_no_tone_words.append(word)
         simplified_words.append(simplified_word)
 
@@ -208,7 +204,11 @@ def compare_ids(file1, file2):
     print (ids2 - ids1)
 
 
-def extract_words(sentence):
+def extract_words(sentence, include_digits=False):
+
+    additional_pattern = ''
+    if include_digits:
+        additional_pattern = '0-9'
     pattern = '[AĂÂÁẮẤÀẰẦẢẲẨÃẴẪẠẶẬĐEÊÉẾÈỀẺỂẼỄẸỆIÍÌỈĨỊ'+ \
             'OÔƠÓỐỚÒỒỜỎỔỞÕỖỠỌỘỢUƯÚỨÙỪỦỬŨỮỤỰYÝỲỶỸỴAĂÂÁẮẤÀẰẦẢẲẨÃẴẪẠẶẬ'+ \
             'ĐEÊÉẾÈỀẺỂẼỄẸỆIÍÌỈĨỊOÔƠÓỐỚÒỒỜỎỔỞÕỖỠỌỘỢUƯÚỨÙỪỦỬŨỮỤỰYÝỲỶỸỴ'+ \
@@ -217,7 +217,8 @@ def extract_words(sentence):
             'OÔƠÓỐỚÒỒỜỎỔỞÕỖỠỌỘỢUƯÚỨÙỪỦỬŨỮỤỰYÝỲỶỸỴAĂÂÁẮẤÀẰẦẢẲẨÃẴẪẠẶẬĐ'+ \
             'EÊÉẾÈỀẺỂẼỄẸỆIÍÌỈĨỊOÔƠÓỐỚÒỒỜỎỔỞÕỖỠỌỘỢUƯÚỨÙỪỦỬŨỮỤỰYÝỲỶỸỴ'+ \
             'AĂÂÁẮẤÀẰẦẢẲẨÃẴẪẠẶẬĐEÊÉẾÈỀẺỂẼỄẸỆIÍÌỈĨỊOÔƠÓỐỚÒỒỜỎỔỞÕỖỠỌỘỢ'+ \
-            'UƯÚỨÙỪỦỬŨỮỤỰYÝỲỶỸỴA-Z]+'
+            'UƯÚỨÙỪỦỬŨỮỤỰYÝỲỶỸỴA-Z' + additional_pattern + ']+'
+            
     indices = []
     words = []
     for m in re.finditer(pattern, sentence,  re.IGNORECASE):
