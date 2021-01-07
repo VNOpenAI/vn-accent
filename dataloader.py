@@ -1,10 +1,8 @@
 import numpy as np
-import torch
 from torch.utils import data
-from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 
-class MTDataset(data.Dataset):
+class Dataset(data.Dataset):
     def __init__(self, src_tokenizer, trg_tokenizer, src_corpus_path, trg_corpus_path, pad_len=200):
         with open(src_corpus_path) as f:
             src_data = f.read().split('\n')[:-1]

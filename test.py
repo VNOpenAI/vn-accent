@@ -1,19 +1,16 @@
-import os
-import json
 import argparse
+import json
+import os
 
-from tqdm import trange
 import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils import data
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
+from tqdm import trange
 
-from model import get_model
-from utils import translate
 from accent_utils import process_line
+from utils import translate
+
+from models.model_factory import get_model
+
 
 def get_arg():
     parser = argparse.ArgumentParser()

@@ -1,12 +1,8 @@
 import copy
-import os
 
-import numpy as np
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
-from .Layer import * 
+from .basic_layer import * 
 
 
 def get_clones(module, N):

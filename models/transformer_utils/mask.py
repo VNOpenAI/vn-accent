@@ -1,14 +1,12 @@
 import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
+
 
 def nopeak_mask(size):
     np_mask = np.triu(np.ones((1, size, size)), k=1).astype('uint8')
     np_mask = np_mask == 0
     np_mask =  torch.from_numpy(np_mask.astype('uint8'))
     return np_mask
-
 
 def create_src_mask(src, pad_token):
     """ src: BxS

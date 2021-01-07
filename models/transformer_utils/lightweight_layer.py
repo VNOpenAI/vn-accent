@@ -1,11 +1,7 @@
-import numpy as np
-
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from fairseq.modules.lightweight_convolution import LightweightConv1dTBC
 
-from .UtilLayer import *
+from .utils import *
 
 
 class LightweightConvLayer(nn.Module):

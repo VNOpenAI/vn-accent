@@ -5,12 +5,10 @@ import logging
 from pathlib import Path
 
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 from torch.utils import data
 
-from model import get_model
-from dataloader import MTDataset
+from models.model_factory import get_model
+from dataloader import Dataset
 from utils import train_model, evaluate_model
 
 
@@ -63,12 +61,12 @@ if __name__=='__main__':
     print("Load data")
     train_src_file = args.train_path + args.src_postfix
     train_trg_file = args.train_path + args.trg_postfix
-    train_dataset = MTDataset(src_tokenizer, trg_tokenizer, train_src_file, train_trg_file)
+    train_dataset = Dataset(src_tokenizer, trg_tokenizer, train_src_file, train_trg_file)
     train_iter = data.dataloader.DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
 
     val_src_file = args.val_path + args.src_postfix
     val_trg_file = args.val_path + args.trg_postfix
-    val_dataset = MTDataset(src_tokenizer, trg_tokenizer, val_src_file, val_trg_file)
+    val_dataset = Dataset(src_tokenizer, trg_tokenizer, val_src_file, val_trg_file)
     val_iter = data.dataloader.DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False)
 
     # Model config

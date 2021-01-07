@@ -1,10 +1,8 @@
-import numpy as np
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .UtilLayer import *
+from .utils import *
 
 class SeparableConv1D(nn.Module):
     """ Input: (batch_size, in_channel, length)

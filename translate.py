@@ -3,13 +3,8 @@ import json
 import argparse
 
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils import data
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
 
-from model import get_model
+from models.model_factory import get_model
 from utils import translate
 
 def get_arg():

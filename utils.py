@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from tqdm import tqdm
 from keras.preprocessing.sequence import pad_sequences
 from accent_utils import extract_words, remove_tone_line
-from models.Mask import create_src_mask
+from models.transformer_utils.mask import create_src_mask
 
 def forward(model, src, src_pad_token=0, use_mask=True):
     if use_mask:
