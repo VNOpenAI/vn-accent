@@ -42,6 +42,8 @@ def get_model(model_param):
         model = LSTM(src_vocab_size, trg_vocab_size, d_model, bidirectional=False)
     elif model_type == "LSTM_BIDIRECTIONAL":
         model = LSTM(src_vocab_size, trg_vocab_size, d_model, bidirectional=True)
+    else:
+        raise ValueError("Wrong model type: {}".format(model_type))
 
     for p in model.parameters():
         if p.dim() > 1:

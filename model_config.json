@@ -8,6 +8,15 @@
         "dropout": 0.1,
         "use_mask": true
     },
+    "transformer": {
+        "model_type": "TRANSFORMER_ENCODER_BASE",
+        "d_model": 512,
+        "d_ff": 2048,
+        "num_layers": 3,
+        "num_heads": 8,
+        "dropout": 0.1,
+        "use_mask": true
+    },
     "lstm": {
         "model_type": "LSTM",
         "d_model": 256,
