@@ -2,7 +2,7 @@ import os
 import torch
 import torch.nn as nn
 
-from models.transformer_utils import evolved_layer, basic_layer
+from .transformer_utils import evolved_layer, basic_layer
 
 from .transformer import TransformerEncoder, Transformer
 from .lstm import LSTM
