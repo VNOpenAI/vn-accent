@@ -27,6 +27,7 @@ def get_arg():
     parser.add_argument('--learning_rate', type=float, default=0.0001)
     parser.add_argument('--num_epochs', type=int, default=1)
     parser.add_argument('--restore_file', default=None)
+    parser.add_argument('--initial_epoch', default=1, type=int)
 
     args = parser.parse_args()
 
@@ -108,7 +109,7 @@ if __name__=='__main__':
 
     # Train model
     print("Start training %d epochs" % args.num_epochs)
-    for e in range(1, args.num_epochs+1):
+    for e in range(args.initial_epoch, args.num_epochs+1):
         logger.info("Epoch %02d/%02d" % (e, args.num_epochs))
         logger.info("Start training")
         print("\nEpoch %02d/%02d" % (e, args.num_epochs), flush=True)
