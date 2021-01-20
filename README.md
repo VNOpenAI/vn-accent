@@ -12,9 +12,7 @@ Mã nguồn ngày được xây dựng dựa trên bộ mã nguồn tại [đây
 
 ## Model
 
-Repo này triển khai các mô hình dựa trên kiến trúc LSTM và Transformer, trong đó với Tran
-
-Do cần dự đoán một từ có dấu tương ứng với một từ không có dấu nên chỉ cần dùng Encoder là đủ.  
+Repo này triển khai các mô hình dựa trên kiến trúc LSTM và Transformer. Trong đó với Transformer, do cần dự đoán một từ có dấu tương ứng với một từ không có dấu nên chỉ cần dùng Encoder là đủ.  
 
 ## Data
 
