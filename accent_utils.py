@@ -1,12 +1,6 @@
-# encoding=utf8
 import codecs
 import csv
 import re
-import sys
-
-# reload(sys)
-# sys.setdefaultencoding('utf8')
-
 
 def remove_tone_file(in_path, out_path):
     with codecs.open(in_path, 'r', encoding='utf-8') as in_file,\
