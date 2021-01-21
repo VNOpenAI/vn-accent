@@ -81,9 +81,9 @@ if __name__=='__main__':
     test_data_lines = None
     ground_truth_lines = None
     with open(args.test_data_file, "r", encoding='utf-8') as f:
-        test_data_lines = f.readlines()[:5000]
+        test_data_lines = f.readlines()
     with open(args.ground_truth_file, "r", encoding='utf-8') as f:
-        ground_truth_lines = f.readlines()[:5000]
+        ground_truth_lines = f.readlines()
 
     total_true_values = 0
     total_values = 0
