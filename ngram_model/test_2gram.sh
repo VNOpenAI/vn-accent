@@ -1,0 +1,1 @@
+python test_2gram.py val.notone val.tone 2gram_model.pkl
