@@ -20,7 +20,8 @@ Repo này triển khai các mô hình dựa trên kiến trúc LSTM và Transfor
 
 - [Wikipedia](https://dumps.wikimedia.org/viwiki/latest/viwiki-latest-pages-articles.xml.bz2). File dữ liệu tải sẵn tại bài viết này: <https://phamdinhkhanh.github.io/2020/05/28/TransformerThemDauTV.html>.
 - Dữ liệu tin tức và bài viết y tế tự crawl.
-
+### Kết quả
+- Dữ liệu tổng hợp được tại [đây](https://drive.google.com/drive/folders/1Ik_oK5_AeU60LZ2cx3nOAycM-HG2BsGp?fbclid=IwAR3x-rbGZRDLaC_tTccJvF2H2S2zsAlZxQ_1RwRS4iQXZdGQD5qKAYMtT7Q)
 ### Một số bước tiền xử lí với 2 tập này:
 
 - Với tập wiki thì định dạng của nó là xml nên cần dùng tool [wikiextractor](https://github.com/attardi/wikiextractor) để lấy nội dung text của các bài viết. Sau đó tách các câu dựa vào các dấu chấm câu như `.!;:`
