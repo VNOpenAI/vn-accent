@@ -5,6 +5,7 @@ Mã nguồn này được phát triển dựa trên bài viết tại [đây](ht
 - [x] Thêm metric + code test.
 - [x] Thêm code tiền/hậu xử lý cho chuỗi đầu vào.
 - [x] Khảo sất độ chính xác model và tốc độ với các tham số khác nhau.
+Xem nhanh file hướng dẫn demo ở [đây](https://colab.research.google.com/drive/1_kNLhHi9Kc4d__Y6DfFuh7popS1A5DmT?usp=sharing)
 ## Tiền xử lý
 Ở đây chúng ta không dùng tokenizer tạo từ các tập data trên mà dùng word list từ [vietnamese-wordlist](https://github.com/duyetdev/vietnamese-wordlist) để tạo bộ tokenizer bằng cách split các từ trong word list và chọn lại các từ đơn.
 Các từ không nằm trong word list sẽ được gán thành 'unknown'. Điều này làm giảm đi rất nhiều kích thước model và làm tăng độ chính xác.
