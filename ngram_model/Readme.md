@@ -10,6 +10,7 @@ Mã nguồn này được phát triển dựa trên bài viết tại [đây](ht
 Các từ không nằm trong word list sẽ được gán thành 'unknown'. Điều này làm giảm đi rất nhiều kích thước model và làm tăng độ chính xác.
 ## Model
 Triển khai model 2grams và 3grams. 
+Mô hình sau khi huấn luyện tại [đây](https://drive.google.com/drive/folders/1I0uzjSMQOb07I0nnbWzCsgwCmdmjRD9c?usp=sharing)
 ## Train model
 ```sh
 python train.py train.tone 2gram_model.pkl --ngram 2
